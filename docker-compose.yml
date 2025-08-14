@@ -1,0 +1,8 @@
+services:
+  web:
+    build: .
+    image: longlivekodak:latest
+    ports:
+      - "8041:8041"
+    restart: unless-stopped
+    # Runs as non-root user defined in Dockerfile

@@ -78,5 +78,33 @@ HOST=127.0.0.1 PORT=9000 ./run.sh
 - On a VPS, ensure port 8041 is open in your firewall.
 - Open http://<your-domain-or-ip>:8041/kodak_frame_generator_v2.html
 
+### Docker
+Build and run the container:
+```bash
+docker build -t longlivekodak .
+docker run --rm -p 8041:8041 longlivekodak
+# then open http://localhost:8041/kodak_frame_generator_v2.html
+```
+
+Notes:
+* The container runs as a non-root user and serves static files on port 8041.
+* `index.html` is symlinked to `kodak_frame_generator_v2.html` for convenience.
+
+### Docker Compose
+One-step startup with Compose v2:
+```bash
+docker compose up -d
+# then open http://localhost:8041/kodak_frame_generator_v2.html
+```
+Stop the stack:
+```bash
+docker compose down
+```
+Change the external port by editing `docker-compose.yml`:
+```yaml
+ports:
+  - "8041:8041"  # change the left side to your desired host port
+```
+
 ## License
 MIT
