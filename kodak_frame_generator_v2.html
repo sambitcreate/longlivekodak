@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Long Live Kodak - Film Frame Generator</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #000000;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .branding {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .branding h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #000000;
+            margin-bottom: 0.5rem;
+            animation: fadeInUp 0.8s ease-out;
+            letter-spacing: -0.02em;
+        }
+
+        .branding p {
+            font-size: 1.2rem;
+            color: #666666;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        /* Upload Modal Styles */
+        .upload-modal {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 1rem;
+            border: 1px solid #e0e0e0;
+            padding: 3rem;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            animation: fadeInScale 0.6s ease-out;
+        }
+
+        .upload-modal:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+        }
+
+        .upload-area {
+            border: 2px dashed #cccccc;
+            border-radius: 0.5rem;
+            padding: 3rem 2rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .upload-area:hover {
+            border-color: #999999;
+            background: rgba(0,0,0,0.02);
+        }
+
+        .upload-area.dragover {
+            border-color: #000000;
+            background: rgba(0,0,0,0.05);
+        }
+
+        .upload-text {
+            color: #000000;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .upload-subtext {
+            color: #666666;
+            font-size: 0.9rem;
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        /* Button Styles */
+        .btn {
+            background: #ffffff;
+            border: 1px solid #000000;
+            border-radius: 2rem;
+            padding: 0.8rem 1.5rem;
+            color: #000000;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background: #000000;
+            color: #ffffff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        /* Results Area */
+        .results-area {
+            display: none;
+            width: 100%;
+            max-width: 900px;
+            text-align: center;
+            animation: fadeInScale 0.6s ease-out;
+        }
+
+        .results-area.show {
+            display: block;
+        }
+
+        .image-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 2rem;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            background: #ffffff;
+            padding: 1rem;
+        }
+
+        #result-canvas {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: none;
+            color: #666666;
+            font-size: 1.1rem;
+            margin-top: 1rem;
+        }
+
+        .loading.show {
+            display: block;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* SVG Filters */
+        .svg-filters {
+            position: absolute;
+            width: 0;
+            height: 0;
+            pointer-events: none;
+        }
+
+        /* Live Controls Toolbar */
+        .controls-toolbar {
+            position: fixed;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid #e0e0e0;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            width: 280px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            display: none;
+            animation: slideInRight 0.4s ease-out;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .controls-toolbar.show {
+            display: block;
+        }
+
+        .controls-toolbar h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #000000;
+            text-align: center;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 0.75rem;
+        }
+
+        .control-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .control-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #333333;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .control-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .control-slider {
+            flex: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .control-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #000000;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .control-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .control-slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            background: #000000;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+
+        .control-value {
+            font-size: 0.8rem;
+            color: #666666;
+            min-width: 35px;
+            text-align: center;
+            font-family: monospace;
+        }
+
+        .preset-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .preset-btn {
+            background: #ffffff;
+            border: 1px solid #cccccc;
+            border-radius: 0.5rem;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #666666;
+        }
+
+        .preset-btn:hover, .preset-btn.active {
+            background: #000000;
+            color: #ffffff;
+            border-color: #000000;
+        }
+
+        .toolbar-toggle {
+            position: fixed;
+            right: 2rem;
+            top: 2rem;
+            background: #ffffff;
+            border: 1px solid #000000;
+            border-radius: 2rem;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: none;
+        }
+
+        .toolbar-toggle.show {
+            display: block;
+        }
+
+        .toolbar-toggle:hover {
+            background: #000000;
+            color: #ffffff;
+        }
+
+        .results-container {
+            display: flex;
+            gap: 2rem;
+            align-items: flex-start;
+            width: 100%;
+            max-width: 1400px;
+        }
+
+        .results-main {
+            flex: 1;
+            text-align: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .controls-toolbar {
+                position: static;
+                transform: none;
+                width: 100%;
+                margin-top: 2rem;
+                right: auto;
+                top: auto;
+            }
+
+            .results-container {
+                flex-direction: column;
+            }
+
+            .toolbar-toggle {
+                display: none !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .branding h1 {
+                font-size: 2rem;
+            }
+            
+            .upload-modal {
+                padding: 2rem;
+            }
+            
+            .upload-area {
+                padding: 2rem 1rem;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .controls-toolbar {
+                padding: 1rem;
+                width: 100%;
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateY(-50%) translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(-50%) translateX(0);
+            }
+        }
+    </style> -->
+</head>
+<body>
+    <!-- SVG Filters -->
+    <svg class="svg-filters">
+        <defs>
+            <filter id="roughPaper" x="-20%" y="-20%" width="140%" height="140%">
+                <feTurbulence baseFrequency="0.04" numOctaves="3" result="noise" seed="1"/>
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="2"/>
+                <feGaussianBlur stdDeviation="0.5"/>
+            </filter>
+            
+            <filter id="filmGrain" x="0%" y="0%" width="100%" height="100%">
+                <feTurbulence baseFrequency="0.9" numOctaves="4" result="grain" seed="2"/>
+                <feColorMatrix in="grain" type="saturate" values="0"/>
+                <feComponentTransfer in="grain" result="grain">
+                    <feFuncA type="discrete" tableValues="0.88 0.95 0.85 0.92"/>
+                </feComponentTransfer>
+                <feBlend in="SourceGraphic" in2="grain" mode="overlay"/>
+            </filter>
+
+            <filter id="frameDistortion" x="-10%" y="-10%" width="120%" height="120%">
+                <feTurbulence baseFrequency="0.02" numOctaves="2" result="displacement" seed="3"/>
+                <feDisplacementMap in="SourceGraphic" in2="displacement" scale="3"/>
+                <feGaussianBlur stdDeviation="0.3"/>
+            </filter>
+
+            <filter id="edgeRoughness" x="-5%" y="-5%" width="110%" height="110%">
+                <feTurbulence baseFrequency="0.1" numOctaves="1" result="turbulence" seed="4"/>
+                <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="1.5"/>
+            </filter>
+        </defs>
+    </svg>
+
+    <div class="container">
+        <div class="branding">
+            <h1>Long Live Kodak</h1>
+            <!-- subtitle removed -->
+        </div>
+
+        <div id="upload-modal" class="upload-modal">
+            <div class="upload-area" id="upload-area">
+                <div class="upload-text">Drop your image here or click to upload</div>
+                <div class="upload-subtext">Supports JPG, PNG, GIF up to 10MB</div>
+            </div>
+            <input type="file" id="file-input" accept="image/*">
+            <div class="loading" id="loading">Generating your vintage frame...</div>
+        </div>
+
+        <div id="results-area" class="results-area">
+            <div class="results-container">
+                <div class="results-main">
+                    <div class="image-container">
+                        <canvas id="result-canvas"></canvas>
+                    </div>
+                    <div class="controls">
+                        <button class="btn" id="regenerate-btn">Regenerate Frame</button>
+                        <button class="btn" id="download-jpg">Download JPG</button>
+                        <button class="btn" id="download-png">Download PNG</button>
+                        <button class="btn" id="new-image">New Image</button>
+                    </div>
+                </div>
+
+                <div class="controls-toolbar" id="controls-toolbar">
+                    <h3>Live Frame Controls</h3>
+                    
+                    <div class="control-group">
+                        <label class="control-label">Frame Thickness</label>
+                        <div class="control-row">
+                            <input type="range" class="control-slider" id="thickness-slider" min="10" max="60" value="25">
+                            <span class="control-value" id="thickness-value">25</span>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">Edge Roughness</label>
+                        <div class="control-row">
+                            <input type="range" class="control-slider" id="roughness-slider" min="0" max="3" step="0.1" value="0.8">
+                            <span class="control-value" id="roughness-value">0.8</span>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">Subtle Scratches</label>
+                        <div class="control-row">
+                            <input type="range" class="control-slider" id="scratches-slider" min="0" max="20" value="8">
+                            <span class="control-value" id="scratches-value">8</span>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">Paper Texture</label>
+                        <div class="control-row">
+                            <input type="range" class="control-slider" id="texture-slider" min="0" max="30" value="15">
+                            <span class="control-value" id="texture-value">15</span>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">Frame Variations</label>
+                        <div class="control-row">
+                            <input type="range" class="control-slider" id="variations-slider" min="0" max="20" value="10">
+                            <span class="control-value" id="variations-value">10</span>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">Edge Imperfections</label>
+                        <div class="control-row">
+                            <input type="range" class="control-slider" id="imperfections-slider" min="0" max="30" value="15">
+                            <span class="control-value" id="imperfections-value">15</span>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label">Asymmetry</label>
+                        <div class="control-row">
+                            <input type="range" class="control-slider" id="asymmetry-slider" min="0" max="15" value="5">
+                            <span class="control-value" id="asymmetry-value">5</span>
+                        </div>
+                    </div>
+
+                    <div class="preset-buttons">
+                        <button class="preset-btn" data-preset="minimal">Minimal</button>
+                        <button class="preset-btn active" data-preset="classic">Classic</button>
+                        <button class="preset-btn" data-preset="vintage">Vintage</button>
+                        <button class="preset-btn" data-preset="distressed">Distressed</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="toolbar-toggle" id="toolbar-toggle">
+            Frame Controls
+        </button>
+    </div>
+
+    <script src="app.js"></script>
+    <!-- <script>
+        let currentImage = null;
+        let canvas = null;
+        let ctx = null;
+        let frameParams = {
+            thickness: 25,
+            roughness: 0.8,
+            scratches: 8,
+            texture: 15,
+            variations: 10,
+            imperfections: 15,
+            asymmetry: 5
+        };
+
+        // Presets
+        const presets = {
+            minimal: { thickness: 15, roughness: 0.2, scratches: 2, texture: 5, variations: 3, imperfections: 5, asymmetry: 1 },
+            classic: { thickness: 25, roughness: 0.8, scratches: 8, texture: 15, variations: 10, imperfections: 15, asymmetry: 5 },
+            vintage: { thickness: 35, roughness: 1.2, scratches: 12, texture: 20, variations: 15, imperfections: 20, asymmetry: 8 },
+            distressed: { thickness: 45, roughness: 2.0, scratches: 18, texture: 25, variations: 18, imperfections: 25, asymmetry: 12 }
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadArea = document.getElementById('upload-area');
+            const fileInput = document.getElementById('file-input');
+            const uploadModal = document.getElementById('upload-modal');
+            const resultsArea = document.getElementById('results-area');
+            const loading = document.getElementById('loading');
+            const controlsToolbar = document.getElementById('controls-toolbar');
+            const toolbarToggle = document.getElementById('toolbar-toggle');
+            
+            canvas = document.getElementById('result-canvas');
+            ctx = canvas.getContext('2d');
+
+            // Upload area click
+            uploadArea.addEventListener('click', () => fileInput.click());
+
+            // File input change
+            fileInput.addEventListener('change', handleFileSelect);
+
+            // Drag and drop
+            uploadArea.addEventListener('dragover', handleDragOver);
+            uploadArea.addEventListener('dragleave', handleDragLeave);
+            uploadArea.addEventListener('drop', handleDrop);
+
+            // Control buttons
+            document.getElementById('regenerate-btn').addEventListener('click', regenerateFrame);
+            document.getElementById('download-jpg').addEventListener('click', () => downloadImage('jpg'));
+            document.getElementById('download-png').addEventListener('click', () => downloadImage('png'));
+            document.getElementById('new-image').addEventListener('click', newImage);
+
+            // Toolbar toggle
+            toolbarToggle.addEventListener('click', () => {
+                controlsToolbar.classList.toggle('show');
+            });
+
+            // Initialize live controls
+            initializeLiveControls();
+        });
+
+        function initializeLiveControls() {
+            // Set up sliders
+            const sliders = ['thickness', 'roughness', 'scratches', 'texture', 'variations', 'imperfections', 'asymmetry'];
+            
+            sliders.forEach(param => {
+                const slider = document.getElementById(`${param}-slider`);
+                const valueDisplay = document.getElementById(`${param}-value`);
+                
+                slider.addEventListener('input', (e) => {
+                    const value = parseFloat(e.target.value);
+                    frameParams[param] = value;
+                    valueDisplay.textContent = param === 'roughness' ? value.toFixed(1) : Math.round(value);
+                    
+                    // Debounced live update
+                    clearTimeout(window.updateTimeout);
+                    window.updateTimeout = setTimeout(() => {
+                        if (currentImage) generateFramedImage();
+                    }, 100);
+                });
+            });
+
+            // Preset buttons
+            document.querySelectorAll('.preset-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const preset = e.target.dataset.preset;
+                    applyPreset(preset);
+                    
+                    // Update active state
+                    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                });
+            });
+        }
+
+        function applyPreset(presetName) {
+            const preset = presets[presetName];
+            if (!preset) return;
+
+            // Update parameters
+            Object.assign(frameParams, preset);
+
+            // Update sliders and displays
+            Object.keys(preset).forEach(param => {
+                const slider = document.getElementById(`${param}-slider`);
+                const valueDisplay = document.getElementById(`${param}-value`);
+                
+                if (slider) {
+                    slider.value = preset[param];
+                    valueDisplay.textContent = param === 'roughness' ? preset[param].toFixed(1) : Math.round(preset[param]);
+                }
+            });
+
+            // Generate new frame
+            if (currentImage) generateFramedImage();
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('dragover');
+        }
+
+        function handleDragLeave(e) {
+            e.currentTarget.classList.remove('dragover');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                processFile(files[0]);
+            }
+        }
+
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (file) {
+                processFile(file);
+            }
+        }
+
+        function processFile(file) {
+            if (!file.type.startsWith('image/')) {
+                alert('Please select an image file.');
+                return;
+            }
+
+            if (file.size > 10 * 1024 * 1024) {
+                alert('File size must be less than 10MB.');
+                return;
+            }
+
+            const loading = document.getElementById('loading');
+            loading.classList.add('show');
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    currentImage = img;
+                    setTimeout(() => {
+                        generateFramedImage();
+                        showResults();
+                        loading.classList.remove('show');
+                    }, 1200);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function generateFramedImage() {
+            if (!currentImage) return;
+
+            // Calculate dimensions
+            const maxWidth = 800;
+            const maxHeight = 600;
+            let { width, height } = currentImage;
+
+            // Scale down if too large
+            const scale = Math.min(maxWidth / width, maxHeight / height, 1);
+            width *= scale;
+            height *= scale;
+
+            // Variable frame thickness with asymmetry
+            const baseThickness = frameParams.thickness;
+            const asymmetry = frameParams.asymmetry;
+            
+            const frameTop = baseThickness + (Math.random() - 0.5) * asymmetry;
+            const frameRight = baseThickness + (Math.random() - 0.5) * asymmetry;
+            const frameBottom = baseThickness + (Math.random() - 0.5) * asymmetry;
+            const frameLeft = baseThickness + (Math.random() - 0.5) * asymmetry;
+
+            const totalWidth = width + frameLeft + frameRight;
+            const totalHeight = height + frameTop + frameBottom;
+
+            canvas.width = totalWidth;
+            canvas.height = totalHeight;
+
+            // Clear canvas
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, totalWidth, totalHeight);
+
+            // Draw sophisticated frame
+            drawAuthenticFrame(totalWidth, totalHeight, frameTop, frameRight, frameBottom, frameLeft, width, height);
+
+            // Draw the image
+            ctx.drawImage(currentImage, frameLeft, frameTop, width, height);
+
+            // Add frame imperfections and details based on parameters
+            addFrameImperfections(totalWidth, totalHeight, frameTop, frameRight, frameBottom, frameLeft);
+            addSubtleTexture(totalWidth, totalHeight);
+            addOrganicEdgeVariations(totalWidth, totalHeight, frameTop, frameRight, frameBottom, frameLeft);
+        }
+
+        function drawAuthenticFrame(totalWidth, totalHeight, frameTop, frameRight, frameBottom, frameLeft, imgWidth, imgHeight) {
+            // Base frame - solid black
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(0, 0, totalWidth, totalHeight);
+
+            // Create inner cutout for image with roughness parameter
+            ctx.globalCompositeOperation = 'destination-out';
+            
+            // Draw irregular inner rectangle
+            ctx.beginPath();
+            const innerX = frameLeft;
+            const innerY = frameTop;
+            const innerW = imgWidth;
+            const innerH = imgHeight;
+
+            // Create path with micro-variations based on roughness
+            const points = [];
+            const segments = 100;
+            const roughnessScale = frameParams.roughness;
+            
+            // Top edge
+            for (let i = 0; i <= segments; i++) {
+                const x = innerX + (i / segments) * innerW;
+                const y = innerY + (Math.random() - 0.5) * roughnessScale;
+                points.push([x, y]);
+            }
+            
+            // Right edge
+            for (let i = 1; i <= segments; i++) {
+                const x = innerX + innerW + (Math.random() - 0.5) * roughnessScale;
+                const y = innerY + (i / segments) * innerH;
+                points.push([x, y]);
+            }
+            
+            // Bottom edge
+            for (let i = segments - 1; i >= 0; i--) {
+                const x = innerX + (i / segments) * innerW;
+                const y = innerY + innerH + (Math.random() - 0.5) * roughnessScale;
+                points.push([x, y]);
+            }
+            
+            // Left edge
+            for (let i = segments - 1; i > 0; i--) {
+                const x = innerX + (Math.random() - 0.5) * roughnessScale;
+                const y = innerY + (i / segments) * innerH;
+                points.push([x, y]);
+            }
+
+            // Draw the path
+            ctx.moveTo(points[0][0], points[0][1]);
+            for (let i = 1; i < points.length; i++) {
+                ctx.lineTo(points[i][0], points[i][1]);
+            }
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.globalCompositeOperation = 'source-over';
+        }
+
+        function addFrameImperfections(totalWidth, totalHeight, frameTop, frameRight, frameBottom, frameLeft) {
+            // Add thickness variations based on variations parameter
+            ctx.fillStyle = '#1a1a1a';
+            
+            const variations = Math.floor(frameParams.variations);
+            
+            for (let i = 0; i < variations; i++) {
+                const side = Math.floor(Math.random() * 4);
+                const variation = Math.random() * 3 + 1;
+                
+                ctx.beginPath();
+                
+                if (side === 0) { // Top
+                    const x = Math.random() * totalWidth;
+                    const w = Math.random() * 40 + 10;
+                    ctx.rect(x, 0, w, variation);
+                } else if (side === 1) { // Right
+                    const y = Math.random() * totalHeight;
+                    const h = Math.random() * 40 + 10;
+                    ctx.rect(totalWidth - frameRight, y, variation, h);
+                } else if (side === 2) { // Bottom
+                    const x = Math.random() * totalWidth;
+                    const w = Math.random() * 40 + 10;
+                    ctx.rect(x, totalHeight - frameBottom, w, variation);
+                } else { // Left
+                    const y = Math.random() * totalHeight;
+                    const h = Math.random() * 40 + 10;
+                    ctx.rect(0, y, variation, h);
+                }
+                
+                ctx.fill();
+            }
+        }
+
+        function addSubtleTexture(totalWidth, totalHeight) {
+            if (frameParams.texture === 0) return;
+            
+            // Create texture based on texture parameter
+            const imageData = ctx.getImageData(0, 0, totalWidth, totalHeight);
+            const data = imageData.data;
+            const textureIntensity = frameParams.texture;
+
+            for (let i = 0; i < data.length; i += 4) {
+                if (data[i] === 0 && data[i + 1] === 0 && data[i + 2] === 0) { // Only affect black frame areas
+                    const noise = (Math.random() - 0.5) * textureIntensity;
+                    data[i] = Math.max(0, Math.min(255, data[i] + noise));
+                    data[i + 1] = Math.max(0, Math.min(255, data[i + 1] + noise));
+                    data[i + 2] = Math.max(0, Math.min(255, data[i + 2] + noise));
+                }
+            }
+
+            ctx.putImageData(imageData, 0, 0);
+        }
+
+        function addOrganicEdgeVariations(totalWidth, totalHeight, frameTop, frameRight, frameBottom, frameLeft) {
+            // Add organic imperfections based on imperfections parameter
+            ctx.fillStyle = '#000000';
+            
+            const imperfections = Math.floor(frameParams.imperfections);
+            
+            for (let i = 0; i < imperfections; i++) {
+                const side = Math.floor(Math.random() * 4);
+                const size = Math.random() * 2 + 0.5;
+                
+                ctx.beginPath();
+                
+                if (side === 0) { // Top edge
+                    const x = Math.random() * totalWidth;
+                    ctx.arc(x, Math.random() * 2, size, 0, Math.PI * 2);
+                } else if (side === 1) { // Right edge
+                    const y = Math.random() * totalHeight;
+                    ctx.arc(totalWidth - Math.random() * 2, y, size, 0, Math.PI * 2);
+                } else if (side === 2) { // Bottom edge
+                    const x = Math.random() * totalWidth;
+                    ctx.arc(x, totalHeight - Math.random() * 2, size, 0, Math.PI * 2);
+                } else { // Left edge
+                    const y = Math.random() * totalHeight;
+                    ctx.arc(Math.random() * 2, y, size, 0, Math.PI * 2);
+                }
+                
+                ctx.fill();
+            }
+
+            // Add scratches based on scratches parameter
+            if (frameParams.scratches > 0) {
+                ctx.strokeStyle = '#333333';
+                ctx.lineWidth = 0.5;
+                
+                const scratches = Math.floor(frameParams.scratches);
+                
+                for (let i = 0; i < scratches; i++) {
+                    ctx.beginPath();
+                    const x1 = Math.random() * totalWidth;
+                    const y1 = Math.random() * totalHeight;
+                    const length = Math.random() * 20 + 5;
+                    const angle = Math.random() * Math.PI * 2;
+                    const x2 = x1 + Math.cos(angle) * length;
+                    const y2 = y1 + Math.sin(angle) * length;
+                    
+                    // Only draw on frame areas
+                    if ((x1 < frameLeft || x1 > totalWidth - frameRight || y1 < frameTop || y1 > totalHeight - frameBottom)) {
+                        ctx.moveTo(x1, y1);
+                        ctx.lineTo(x2, y2);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }[i][0], points[i][1]);
+            }
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.globalCompositeOperation = 'source-over';
+        }
+
+        function addFrameImperfections(totalWidth, totalHeight, frameTop, frameRight, frameBottom, frameLeft) {
+            // Add subtle thickness variations
+            ctx.fillStyle = '#1a1a1a';
+            
+            // Random thickness variations along edges
+            const variations = Math.floor(Math.random() * 12) + 8;
+            
+            for (let i = 0; i < variations; i++) {
+                const side = Math.floor(Math.random() * 4);
+                const variation = Math.random() * 3 + 1;
+                
+                ctx.beginPath();
+                
+                if (side === 0) { // Top
+                    const x = Math.random() * totalWidth;
+                    const w = Math.random() * 40 + 10;
+                    ctx.rect(x, 0, w, variation);
+                } else if (side === 1) { // Right
+                    const y = Math.random() * totalHeight;
+                    const h = Math.random() * 40 + 10;
+                    ctx.rect(totalWidth - frameRight, y, variation, h);
+                } else if (side === 2) { // Bottom
+                    const x = Math.random() * totalWidth;
+                    const w = Math.random() * 40 + 10;
+                    ctx.rect(x, totalHeight - frameBottom, w, variation);
+                } else { // Left
+                    const y = Math.random() * totalHeight;
+                    const h = Math.random() * 40 + 10;
+                    ctx.rect(0, y, variation, h);
+                }
+                
+                ctx.fill();
+            }
+        }
+
+        function addSubtleTexture(totalWidth, totalHeight) {
+            // Create subtle paper-like texture
+            const imageData = ctx.getImageData(0, 0, totalWidth, totalHeight);
+            const data = imageData.data;
+
+            for (let i = 0; i < data.length; i += 4) {
+                if (data[i] === 0 && data[i + 1] === 0 && data[i + 2] === 0) { // Only affect black frame areas
+                    const noise = (Math.random() - 0.5) * 15;
+                    data[i] = Math.max(0, Math.min(255, data[i] + noise));
+                    data[i + 1] = Math.max(0, Math.min(255, data[i + 1] + noise));
+                    data[i + 2] = Math.max(0, Math.min(255, data[i + 2] + noise));
+                }
+            }
+
+            ctx.putImageData(imageData, 0, 0);
+        }
+
+        function addOrganicEdgeVariations(totalWidth, totalHeight, frameTop, frameRight, frameBottom, frameLeft) {
+            // Add organic small imperfections to outer edges
+            ctx.fillStyle = '#000000';
+            
+            const imperfections = Math.floor(Math.random() * 20) + 10;
+            
+            for (let i = 0; i < imperfections; i++) {
+                const side = Math.floor(Math.random() * 4);
+                const size = Math.random() * 2 + 0.5;
+                
+                ctx.beginPath();
+                
+                if (side === 0) { // Top edge
+                    const x = Math.random() * totalWidth;
+                    ctx.arc(x, Math.random() * 2, size, 0, Math.PI * 2);
+                } else if (side === 1) { // Right edge
+                    const y = Math.random() * totalHeight;
+                    ctx.arc(totalWidth - Math.random() * 2, y, size, 0, Math.PI * 2);
+                } else if (side === 2) { // Bottom edge
+                    const x = Math.random() * totalWidth;
+                    ctx.arc(x, totalHeight - Math.random() * 2, size, 0, Math.PI * 2);
+                } else { // Left edge
+                    const y = Math.random() * totalHeight;
+                    ctx.arc(Math.random() * 2, y, size, 0, Math.PI * 2);
+                }
+                
+                ctx.fill();
+            }
+
+            // Add tiny scratches
+            ctx.strokeStyle = '#333333';
+            ctx.lineWidth = 0.5;
+            
+            const scratches = Math.floor(Math.random() * 8) + 4;
+            
+            for (let i = 0; i < scratches; i++) {
+                ctx.beginPath();
+                const x1 = Math.random() * totalWidth;
+                const y1 = Math.random() * totalHeight;
+                const length = Math.random() * 20 + 5;
+                const angle = Math.random() * Math.PI * 2;
+                const x2 = x1 + Math.cos(angle) * length;
+                const y2 = y1 + Math.sin(angle) * length;
+                
+                // Only draw on frame areas
+                if ((x1 < frameLeft || x1 > totalWidth - frameRight || y1 < frameTop || y1 > totalHeight - frameBottom)) {
+                    ctx.moveTo(x1, y1);
+                    ctx.lineTo(x2, y2);
+                    ctx.stroke();
+                }
+            }
+        }
+
+        function regenerateFrame() {
+            if (currentImage) {
+                generateFramedImage();
+            }
+        }
+
+        function downloadImage(format) {
+            if (!canvas) return;
+            
+            const link = document.createElement('a');
+            link.download = `kodak-frame-${Date.now()}.${format}`;
+            
+            if (format === 'jpg') {
+                link.href = canvas.toDataURL('image/jpeg', 0.95);
+            } else {
+                link.href = canvas.toDataURL('image/png');
+            }
+            
+            link.click();
+        }
+
+        function showResults() {
+            document.getElementById('upload-modal').style.display = 'none';
+            document.getElementById('results-area').classList.add('show');
+            document.getElementById('controls-toolbar').classList.add('show');
+            document.getElementById('toolbar-toggle').classList.add('show');
+        }
+
+        function newImage() {
+            document.getElementById('upload-modal').style.display = 'block';
+            document.getElementById('results-area').classList.remove('show');
+        }
+        </script> -->
+</body>
+</html>
