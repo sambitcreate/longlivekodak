@@ -11,6 +11,7 @@ let frameParams = {
   variations: 10,
   imperfections: 15,
   asymmetry: 5,
+  imageZoom: 2, // percent zoom-in to hide edge artifacts
 };
 
 // Presets
@@ -99,6 +100,7 @@ function initializeLiveControls() {
     'variations',
     'imperfections',
     'asymmetry',
+    'imageZoom',
   ];
 
   sliders.forEach((param) => {
@@ -108,7 +110,8 @@ function initializeLiveControls() {
     slider.addEventListener('input', (e) => {
       const value = parseFloat(e.target.value);
       frameParams[param] = value;
-      valueDisplay.textContent = param === 'roughness' ? value.toFixed(1) : Math.round(value);
+      valueDisplay.textContent =
+        param === 'roughness' || param === 'imageZoom' ? value.toFixed(1) : Math.round(value);
 
       // Debounced live update
       clearTimeout(window.updateTimeout);
@@ -254,7 +257,12 @@ function generateFramedImage() {
   );
 
   // Draw the image
-  ctx.drawImage(currentImage, frameLeft, frameTop, width, height);
+  const zoom = (frameParams.imageZoom || 0) / 100;
+  const destX = frameLeft - (width * zoom) / 2;
+  const destY = frameTop - (height * zoom) / 2;
+  const destW = width * (1 + zoom);
+  const destH = height * (1 + zoom);
+  ctx.drawImage(currentImage, destX, destY, destW, destH);
 
   // Add frame imperfections and details based on parameters
   addFrameImperfections(totalWidth, totalHeight, frameTop, frameRight, frameBottom, frameLeft);
